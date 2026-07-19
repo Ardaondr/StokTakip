@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="StokTakip.ExcelImportWindow"
+        Title="Excel'den İlaç İçe Aktar" Width="580" Height="460"
+        MinWidth="520" MinHeight="420">
+    <Grid Margin="14" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*,Auto,Auto">
+
+        <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="0,0,0,10"
+                   Text="Tarım ve Orman Bakanlığı BKÜ veri tabanından (bku.tarimorman.gov.tr) elde ettiğin Excel dosyasını seç. Hangi sütunun ilaç adı olduğunu aşağıdan eşleştir."/>
+
+        <!-- Dosya seçimi -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
+            <Button x:Name="SelectFileButton" Content="Excel Dosyası Seç..." Click="SelectFileButton_Click"/>
+            <TextBlock x:Name="FileNameText" VerticalAlignment="Center" Text="Dosya seçilmedi" FontStyle="Italic"/>
+        </StackPanel>
+
+        <!-- Zorunlu sütun eşleştirme -->
+        <StackPanel Grid.Row="2" Orientation="Vertical" Width="260" HorizontalAlignment="Left" Margin="0,0,0,10">
+            <TextBlock Text="İlaç (Ürün) Adı Sütunu *"/>
+            <ComboBox x:Name="ProductColumnCombo" Width="260" SelectionChanged="ColumnCombo_SelectionChanged"/>
+        </StackPanel>
+
+        <!-- Opsiyonel durum filtresi -->
+        <Border Grid.Row="3" BorderBrush="Gray" BorderThickness="0,1,0,1" Padding="0,10" Margin="0,0,0,10">
+            <StackPanel>
+                <CheckBox x:Name="StatusFilterCheck" Content="Sadece belirli durumdaki satırları aktar (örn. sadece 'Ruhsatlı' olanlar)"
+                          Checked="StatusFilterCheck_Toggled" Unchecked="StatusFilterCheck_Toggled"/>
+                <WrapPanel Margin="20,6,0,0">
+                    <StackPanel Orientation="Vertical" Margin="0,0,16,0" Width="260">
+                        <TextBlock Text="Durum Sütunu"/>
+                        <ComboBox x:Name="StatusColumnCombo" Width="260" SelectionChanged="ColumnCombo_SelectionChanged"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Vertical" Width="200">
+                        <TextBlock Text="İçermesi gereken metin"/>
+                        <TextBox x:Name="StatusValueBox" Text="Ruhsatlı" TextChanged="StatusValueBox_TextChanged"/>
+                    </StackPanel>
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="4" Text="Önizleme (ilk 5 satır):" FontWeight="Bold" Margin="0,0,0,4"/>
+
+        <ScrollViewer Grid.Row="5" Margin="0,0,0,10">
+            <TextBlock x:Name="PreviewText" TextWrapping="Wrap" FontFamily="Consolas,Menlo,monospace"/>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" Spacing="8">
+            <Button x:Name="ImportButton" Content="İçe Aktar" Click="ImportButton_Click" IsEnabled="False"/>
+            <TextBlock x:Name="StatusText" VerticalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>

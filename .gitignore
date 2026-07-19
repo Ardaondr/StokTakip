@@ -1,0 +1,16 @@
+## `.NET Core` için derleme ve geçici dosyalar
+bin/
+obj/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Veritabanı Güvenliği (Kendi stok verilerinizin GitHub'a yüklenmesini engeller)
+stok.db
+StokYedekleri/
+
+## macOS işletim sisteminin ürettiği gereksiz dosyalar
+.DS_Store
+.AppleDouble
+.LSOverride
