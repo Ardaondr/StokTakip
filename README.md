@@ -36,8 +36,6 @@ STOK.IO, bir zirai ilaç bayisinin günlük stok hareketlerini hızlı ve hatas�
 | ORM | Entity Framework Core |
 | Mimari | Tek pencere, sekme (tab) tabanlı dashboard |
 
-## 🚀 Kurulum
-
 ### Gereksinimler
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
 
