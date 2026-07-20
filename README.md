@@ -11,7 +11,7 @@ Zirai ilaç bayileri ve depoları için geliştirilmiş, hafif ve modern bir mas
 
 ## 📌 Ne İşe Yarar?
 
-STOK.IO, bir zirai ilaç bayisinin günlük stok hareketlerini (giriş, çıkış, güncelleme) hızlı ve hatasız şekilde takip edebilmesi için tasarlandı. Excel'e bağımlı, dağınık takip yöntemlerinin yerine tek ekrandan yönetilebilen, çoklu kullanıcı destekli bir sistem sunar.
+STOK.IO, bir zirai ilaç bayisinin günlük stok hareketlerini hızlı ve hatasız şekilde takip edebilmesi için tasarlandı. Excel'e bağımlı, dağınık takip yöntemlerinin yerine tek ekrandan yönetilebilen, çoklu kullanıcı destekli bir sistem sunar.
 
 ## ✨ Özellikler
 
