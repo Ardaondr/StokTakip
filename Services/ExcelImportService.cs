@@ -27,13 +27,30 @@ namespace StokTakip.Services
     public class ImportResult
     {
         public int NewProducts { get; set; }
+        public int UpdatedProducts { get; set; }
         public int AlreadyExisted { get; set; }
         public int SkippedRows { get; set; }
+        public int QuantityParseFailures { get; set; }
         public int TotalRows { get; set; }
 
-        public string Summary =>
-            $"Toplam {TotalRows} satır işlendi: {NewProducts} yeni ilaç eklendi, " +
-            $"{AlreadyExisted} zaten kayıtlıydı (atlandı), {SkippedRows} satır boş/geçersiz olduğu için atlandı.";
+        public string Summary
+        {
+            get
+            {
+                var mesaj =
+                    $"Toplam {TotalRows} satır işlendi: {NewProducts} yeni ilaç eklendi, " +
+                    $"{UpdatedProducts} mevcut ürünün miktarı güncellendi, " +
+                    $"{AlreadyExisted} zaten kayıtlıydı ve değişmedi, " +
+                    $"{SkippedRows} satır boş/geçersiz olduğu için atlandı.";
+
+                if (QuantityParseFailures > 0)
+                {
+                    mesaj += $" {QuantityParseFailures} satırda miktar okunamadı.";
+                }
+
+                return mesaj;
+            }
+        }
     }
 
     public static class ExcelImportService
@@ -80,22 +97,21 @@ namespace StokTakip.Services
             return new ExcelSheetData { Columns = columns, Rows = rows };
         }
 
-        // Belirtilen sütun eşleştirmesine göre yeni ilaçları Products tablosuna ekler.
-        // Miktar alanına dokunulmaz: yeni ürünler 0 stokla eklenir, zaten var olanlar atlanır.
+        // Belirtilen sütun eşleştirmesine göre ürünleri Products tablosuna işler:
+        // - İlaç sistemde yoksa yeni kayıt olarak eklenir (miktar sütunu okunabiliyorsa o değerle, yoksa 0 ile).
+        // - İlaç sistemde zaten varsa VE miktar sütunu o satırda okunabiliyorsa, mevcut ürünün miktarı güncellenir.
+        // - İlaç sistemde zaten varsa AMA miktar sütunu seçilmemişse/okunamıyorsa, ürüne dokunulmaz.
         public static ImportResult Import(
             StokContext context,
             ExcelSheetData data,
             int productNameColumnIndex,
-            int? statusColumnIndex,
-            string? requiredStatusContains)
+            int? quantityColumnIndex)
         {
             var result = new ImportResult { TotalRows = data.Rows.Count };
 
-            var existingNames = context.Products
-                .Select(p => p.Name)
+            var existingProducts = context.Products
                 .ToList()
-                .Select(Normalize)
-                .ToHashSet();
+                .ToDictionary(p => Normalize(p.Name), p => p);
 
             foreach (var row in data.Rows)
             {
@@ -107,35 +123,75 @@ namespace StokTakip.Services
                     continue;
                 }
 
-                if (statusColumnIndex is not null && !string.IsNullOrWhiteSpace(requiredStatusContains))
+                int? parsedQuantity = null;
+                if (quantityColumnIndex is not null)
                 {
-                    var statusValue = data.GetCell(row, statusColumnIndex.Value);
-                    if (!statusValue.Contains(requiredStatusContains, StringComparison.OrdinalIgnoreCase))
+                    var quantityText = data.GetCell(row, quantityColumnIndex.Value);
+                    if (!string.IsNullOrWhiteSpace(quantityText))
                     {
-                        result.SkippedRows++;
-                        continue;
+                        if (TryParseQuantity(quantityText, out var q))
+                        {
+                            parsedQuantity = q;
+                        }
+                        else
+                        {
+                            // Hücrede bir şey yazıyordu ama sayıya çevrilemedi (örn. "elli adet" gibi serbest metin)
+                            result.QuantityParseFailures++;
+                        }
                     }
                 }
 
                 var key = Normalize(productName);
-                if (existingNames.Contains(key))
+
+                if (existingProducts.TryGetValue(key, out var mevcutUrun))
                 {
-                    result.AlreadyExisted++;
+                    if (parsedQuantity is not null)
+                    {
+                        mevcutUrun.Quantity = parsedQuantity.Value;
+                        mevcutUrun.LastUpdated = DateTime.Now;
+                        result.UpdatedProducts++;
+                    }
+                    else
+                    {
+                        result.AlreadyExisted++;
+                    }
                     continue;
                 }
 
-                context.Products.Add(new Product
+                var yeniUrun = new Product
                 {
                     Name = productName,
-                    Quantity = 0,
+                    Quantity = parsedQuantity ?? 0,
                     LastUpdated = DateTime.Now
-                });
-                existingNames.Add(key);
+                };
+
+                context.Products.Add(yeniUrun);
+                existingProducts[key] = yeniUrun;
                 result.NewProducts++;
             }
 
             context.SaveChanges();
             return result;
+        }
+
+        // "50", "50,0", "50.0" gibi hem virgüllü hem noktalı ondalık ayraçları tolere eder,
+        // negatif miktar girilirse 0'a düşürür.
+        private static bool TryParseQuantity(string text, out int quantity)
+        {
+            var temizlenmis = text.Trim().Replace(",", ".");
+
+            if (double.TryParse(
+                    temizlenmis,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out var sayisalDeger))
+            {
+                quantity = Math.Max(0, (int)Math.Round(sayisalDeger));
+                return true;
+            }
+
+            quantity = 0;
+            return false;
         }
 
         private static string Normalize(string value) => value.Trim().ToUpperInvariant();

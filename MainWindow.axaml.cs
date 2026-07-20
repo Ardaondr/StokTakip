@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using StokTakip.Data;
 using StokTakip.Models;
@@ -93,7 +94,7 @@ namespace StokTakip
             }
             catch
             {
-                // Kapatırken programın takılmasını engelleniyor.
+                // Kapatırken programın takılmasını engellemek için hataları yutuyoruz
             }
 
             base.OnClosing(e);
@@ -320,17 +321,34 @@ namespace StokTakip
             }
         }
 
-        private async void DownloadTemplateButton_Click(object? sender, RoutedEventArgs e)
+        private void DownloadTemplateButton_Click(object? sender, RoutedEventArgs e)
         {
             try
             {
                 string masaustuYolu = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                string tamYol = Path.Combine(masaustuYolu, "Stok_Yukleme_Sablonu.csv");
+                string tamYol = Path.Combine(masaustuYolu, "Stok_Yukleme_Sablonu.xlsx");
 
-                string sablonIcerik = "İlaç Adı,Stok Miktarı\nDelmetrin 2.5 EC,50\nGlyphosate 480 g/l,120\n";
-                await File.WriteAllTextAsync(tamYol, sablonIcerik, System.Text.Encoding.UTF8);
+                using var workbook = new XLWorkbook();
+                var sheet = workbook.Worksheets.Add("Şablon");
 
-                StatusText.Text = "Örnek Excel yükleme şablonu Masaüstünüze başarıyla indirildi!";
+                sheet.Cell(1, 1).Value = "İlaç Adı";
+                sheet.Cell(1, 2).Value = "Stok Miktarı";
+
+                var baslikSatiri = sheet.Range(1, 1, 1, 2);
+                baslikSatiri.Style.Font.Bold = true;
+                baslikSatiri.Style.Fill.BackgroundColor = XLColor.FromHtml("#1A1C23");
+                baslikSatiri.Style.Font.FontColor = XLColor.White;
+
+                sheet.Cell(2, 1).Value = "Delmetrin 2.5 EC";
+                sheet.Cell(2, 2).Value = 50;
+                sheet.Cell(3, 1).Value = "Glyphosate 480 g/l";
+                sheet.Cell(3, 2).Value = 120;
+
+                sheet.Columns().AdjustToContents();
+
+                workbook.SaveAs(tamYol);
+
+                StatusText.Text = "Örnek Excel yükleme şablonu (.xlsx) Masaüstünüze başarıyla indirildi!";
             }
             catch (Exception ex)
             {
@@ -414,39 +432,57 @@ namespace StokTakip
             }
         }
 
-       private async void ExportExcelButton_Click(object? sender, RoutedEventArgs e)
-{
-    try
-    {
-        using var context = new StokContext();
-        var urunler = await context.Products.OrderBy(p => p.Name).ToListAsync();
-
-        string masaustuYolu = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        string dosyaAdi = $"Stok_Disa_Aktarim_{DateTime.Now:yyyyMMdd_HHmm}.csv";
-        string tamYol = Path.Combine(masaustuYolu, dosyaAdi);
-
-        var satirlar = new List<string> { "ID,İlaç Adı,Miktar,Son Güncelleme" };
-
-        foreach (var u in urunler)
+        private async void ExportExcelButton_Click(object? sender, RoutedEventArgs e)
         {
-            // Virgül veya tırnak içeren ilaç adlarını CSV'de bozmamak için tırnak içine alıyoruz
-            string guvenliAd = u.Name.Contains(',') || u.Name.Contains('"')
-                ? $"\"{u.Name.Replace("\"", "\"\"")}\""
-                : u.Name;
+            try
+            {
+                using var context = new StokContext();
+                var urunler = await context.Products.OrderBy(p => p.Name).ToListAsync();
 
-            satirlar.Add($"{u.Id},{guvenliAd},{u.Quantity},{u.LastUpdated:dd.MM.yyyy HH:mm}");
+                string masaustuYolu = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                string dosyaAdi = $"Stok_Disa_Aktarim_{DateTime.Now:yyyyMMdd_HHmm}.xlsx";
+                string tamYol = Path.Combine(masaustuYolu, dosyaAdi);
+
+                using var workbook = new XLWorkbook();
+                var sheet = workbook.Worksheets.Add("Stok Listesi");
+
+                // Başlık satırı
+                sheet.Cell(1, 1).Value = "ID";
+                sheet.Cell(1, 2).Value = "İlaç Adı";
+                sheet.Cell(1, 3).Value = "Miktar";
+                sheet.Cell(1, 4).Value = "Son Güncelleme";
+
+                var baslikSatiri = sheet.Range(1, 1, 1, 4);
+                baslikSatiri.Style.Font.Bold = true;
+                baslikSatiri.Style.Fill.BackgroundColor = XLColor.FromHtml("#1A1C23");
+                baslikSatiri.Style.Font.FontColor = XLColor.White;
+
+                // Veri satırları
+                int satirNo = 2;
+                foreach (var u in urunler)
+                {
+                    sheet.Cell(satirNo, 1).Value = u.Id;
+                    sheet.Cell(satirNo, 2).Value = u.Name;
+                    sheet.Cell(satirNo, 3).Value = u.Quantity;
+                    sheet.Cell(satirNo, 4).Value = u.LastUpdated;
+                    sheet.Cell(satirNo, 4).Style.DateFormat.Format = "dd.MM.yyyy HH:mm";
+
+                    satirNo++;
+                }
+
+                sheet.Columns().AdjustToContents();
+                sheet.SheetView.FreezeRows(1); // Başlık satırı kayarken sabit kalsın
+
+                workbook.SaveAs(tamYol);
+
+                StatusText.Text = $"{urunler.Count} ürün '{dosyaAdi}' olarak Masaüstüne aktarıldı!";
+                await LogEkleAsync("Sistem", "Dışa Aktar", $"{urunler.Count} adet ürün Excel (.xlsx) olarak dışa aktarıldı.");
+            }
+            catch (Exception ex)
+            {
+                StatusText.Text = $"Dışa aktarım başarısız: {ex.Message}";
+            }
         }
-
-        await File.WriteAllLinesAsync(tamYol, satirlar, System.Text.Encoding.UTF8);
-
-        StatusText.Text = $"{urunler.Count} ürün '{dosyaAdi}' olarak Masaüstüne aktarıldı!";
-        await LogEkleAsync("Sistem", "Dışa Aktar", $"{urunler.Count} adet ürün CSV olarak dışa aktarıldı.");
-    }
-    catch (Exception ex)
-    {
-        StatusText.Text = $"Dışa aktarım başarısız: {ex.Message}";
-    }
-}
 
         private bool TryReadForm(out string name, out int quantity, out string error)
         {

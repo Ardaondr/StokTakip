@@ -49,10 +49,10 @@ namespace StokTakip
                 var columnOptions = _sheetData.Columns.Cast<object>().ToList();
                 ProductColumnCombo.ItemsSource = columnOptions;
 
-                var statusOptions = new List<object> { NoneOption };
-                statusOptions.AddRange(columnOptions);
-                StatusColumnCombo.ItemsSource = statusOptions;
-                StatusColumnCombo.SelectedItem = NoneOption;
+                var quantityOptions = new List<object> { NoneOption };
+                quantityOptions.AddRange(columnOptions);
+                QuantityColumnCombo.ItemsSource = quantityOptions;
+                QuantityColumnCombo.SelectedItem = NoneOption;
 
                 StatusText.Text = $"{_sheetData.Rows.Count} veri satırı bulundu.";
                 StatusText.Foreground = Avalonia.Media.Brushes.Gray;
@@ -72,25 +72,12 @@ namespace StokTakip
             UpdatePreviewAndButtonState();
         }
 
-        private void StatusFilterCheck_Toggled(object? sender, RoutedEventArgs e)
-        {
-            UpdatePreviewAndButtonState();
-        }
-
-        private void StatusValueBox_TextChanged(object? sender, TextChangedEventArgs e)
-        {
-            UpdatePreviewAndButtonState();
-        }
-
         private void UpdatePreviewAndButtonState()
         {
             var productCol = ProductColumnCombo.SelectedItem as ColumnOption;
+            var quantityCol = QuantityColumnCombo.SelectedItem as ColumnOption;
 
-            var statusColSelected = StatusFilterCheck.IsChecked == true;
-            var statusCol = StatusColumnCombo.SelectedItem as ColumnOption;
-            var statusColValid = !statusColSelected || (statusCol is not null && statusCol.Index >= 0);
-
-            ImportButton.IsEnabled = _sheetData is not null && productCol is not null && statusColValid;
+            ImportButton.IsEnabled = _sheetData is not null && productCol is not null;
 
             if (_sheetData is null || productCol is null)
             {
@@ -113,10 +100,10 @@ namespace StokTakip
                 var productName = _sheetData.GetCell(row, productCol.Index);
                 sb.Append(n).Append(". İlaç: ").Append(productName);
 
-                if (statusColSelected && statusCol is not null && statusCol.Index >= 0)
+                if (quantityCol is not null && quantityCol.Index >= 0)
                 {
-                    var statusValue = _sheetData.GetCell(row, statusCol.Index);
-                    sb.Append("  |  Durum: ").Append(statusValue);
+                    var quantityValue = _sheetData.GetCell(row, quantityCol.Index);
+                    sb.Append("  |  Miktar: ").Append(string.IsNullOrWhiteSpace(quantityValue) ? "(boş → 0)" : quantityValue);
                 }
 
                 sb.AppendLine();
@@ -139,21 +126,11 @@ namespace StokTakip
                 return;
             }
 
-            int? statusColIndex = null;
-            string? statusRequiredValue = null;
-
-            if (StatusFilterCheck.IsChecked == true)
+            int? quantityColIndex = null;
+            var quantityCol = QuantityColumnCombo.SelectedItem as ColumnOption;
+            if (quantityCol is not null && quantityCol.Index >= 0)
             {
-                var statusCol = StatusColumnCombo.SelectedItem as ColumnOption;
-                if (statusCol is null || statusCol.Index < 0)
-                {
-                    StatusText.Text = "Durum filtresini işaretlediysen bir durum sütunu seçmelisin.";
-                    StatusText.Foreground = Avalonia.Media.Brushes.DarkRed;
-                    return;
-                }
-
-                statusColIndex = statusCol.Index;
-                statusRequiredValue = StatusValueBox.Text?.Trim();
+                quantityColIndex = quantityCol.Index;
             }
 
             try
@@ -163,8 +140,7 @@ namespace StokTakip
                     _context,
                     _sheetData,
                     productCol.Index,
-                    statusColIndex,
-                    statusRequiredValue);
+                    quantityColIndex);
 
                 StatusText.Text = result.Summary;
                 StatusText.Foreground = Avalonia.Media.Brushes.DarkGreen;
