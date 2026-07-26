@@ -2,58 +2,282 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:models="using:StokTakip.Models"
         x:Class="StokTakip.MainWindow"
-        Title="Stok Takip Paneli" Width="1100" Height="750" MinWidth="950" MinHeight="600"
-        Background="#F4F6F8">
-    
-    <Grid ColumnDefinitions="240,*">
-        
+        Title="Envanter — Stok Takip Paneli" Width="1100" Height="750" MinWidth="950" MinHeight="600"
+        Background="#F3F5F0"
+        FontFamily="Segoe UI, Helvetica Neue, Arial, sans-serif">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="Sidebar" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="Panel" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="PanelAlt" Color="#ECEFE7"/>
+        <SolidColorBrush x:Key="BorderCol" Color="#D9DED0"/>
+        <SolidColorBrush x:Key="TextMain" Color="#2B2E22"/>
+        <SolidColorBrush x:Key="TextDim" Color="#6B6F5E"/>
+        <SolidColorBrush x:Key="TextFaint" Color="#9CA08D"/>
+        <SolidColorBrush x:Key="Amber" Color="#B8862E"/>
+        <SolidColorBrush x:Key="AmberStrong" Color="#96691E"/>
+        <SolidColorBrush x:Key="AmberSoft" Color="#1FB8862E"/>
+        <SolidColorBrush x:Key="Danger" Color="#B14B3E"/>
+        <SolidColorBrush x:Key="DangerSoft" Color="#1FB14B3E"/>
+        <SolidColorBrush x:Key="OnAmber" Color="#FFFFFF"/>
+        <FontFamily x:Key="FontMono">Consolas, Menlo, Monospace</FontFamily>
+    </Window.Resources>
+
+    <Window.Styles>
+        <!-- Sidebar nav item (inactive) -->
+        <Style Selector="Button.navSub">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextFaint}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="20,8"/>
+            <Setter Property="CornerRadius" Value="3"/>
+        </Style>
+        <Style Selector="Button.navSub:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <!-- Sidebar nav item (active) -->
+        <Style Selector="Button.navActive">
+            <Setter Property="Background" Value="{StaticResource AmberSoft}"/>
+            <Setter Property="Foreground" Value="{StaticResource AmberStrong}"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Amber}"/>
+            <Setter Property="BorderThickness" Value="2,0,0,0"/>
+        </Style>
+
+        <!-- Toolbar buttons: outline default -->
+        <Style Selector="Button.outline">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.outline:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextDim}"/>
+        </Style>
+
+        <!-- Primary (filled amber) -->
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{StaticResource Amber}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnAmber}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.primary:pointerover">
+            <Setter Property="Background" Value="{StaticResource AmberStrong}"/>
+        </Style>
+
+        <!-- Danger (outline, red text) -->
+        <Style Selector="Button.danger">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Danger}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="Button.danger:pointerover">
+            <Setter Property="BorderBrush" Value="{StaticResource Danger}"/>
+        </Style>
+
+        <!-- Step buttons (-1 / +1) -->
+        <Style Selector="Button.step">
+            <Setter Property="Background" Value="{StaticResource PanelAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontFamily" Value="{StaticResource FontMono}"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+        </Style>
+        <Style Selector="Button.step:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource AmberStrong}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Amber}"/>
+        </Style>
+
+        <!-- Pager buttons -->
+        <Style Selector="Button.pager">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="Button.pager:pointerover">
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextDim}"/>
+        </Style>
+
+        <!-- Dark-panel filled action buttons (Veri Kontrolü sekmesi) -->
+        <Style Selector="Button.panelAction">
+            <Setter Property="Background" Value="{StaticResource PanelAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.panelAction:pointerover">
+            <Setter Property="BorderBrush" Value="{StaticResource Amber}"/>
+            <Setter Property="Foreground" Value="{StaticResource AmberStrong}"/>
+        </Style>
+
+        <!-- Inputs -->
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{StaticResource PanelAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="CaretBrush" Value="{StaticResource Amber}"/>
+        </Style>
+        <Style Selector="TextBox:focus">
+            <Setter Property="BorderBrush" Value="{StaticResource Amber}"/>
+        </Style>
+        <Style Selector="AutoCompleteBox">
+            <Setter Property="Background" Value="{StaticResource PanelAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="FontFamily" Value="{StaticResource FontMono}"/>
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="{StaticResource PanelAlt}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+        </Style>
+
+        <!-- DataGrid dark theme -->
+        <Style Selector="DataGrid">
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="RowBackground" Value="{StaticResource Panel}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#E5E8DD"/>
+            <Setter Property="VerticalGridLinesBrush" Value="Transparent"/>
+            <Setter Property="FontSize" Value="13.5"/>
+        </Style>
+        <Style Selector="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextFaint}"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="Padding" Value="14,10"/>
+        </Style>
+        <Style Selector="DataGridRow:selected /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="{StaticResource AmberSoft}"/>
+        </Style>
+        <Style Selector="DataGridRow:pointerover /template/ Rectangle#BackgroundRectangle">
+            <Setter Property="Fill" Value="#F1F3EC"/>
+        </Style>
+
+        <!-- Section headings inside settings tabs -->
+        <Style Selector="TextBlock.sectionTitle">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextMain}"/>
+        </Style>
+        <Style Selector="TextBlock.sectionSub">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
+        </Style>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource Panel}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderCol}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="3"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="264,*">
+
         <!-- ================= SOL KENAR ÇUBUĞU (SIDEBAR) ================= -->
-        <Border Grid.Column="0" Background="#1A1C23" Padding="20">
+        <Border Grid.Column="0" Background="{StaticResource Sidebar}" BorderBrush="{StaticResource BorderCol}" BorderThickness="0,0,1,0" Padding="22,28">
             <Grid RowDefinitions="Auto,*,Auto">
-                
+
                 <!-- Logo / Başlık Bölümü -->
-                <StackPanel Grid.Row="0" Margin="0,10,0,40" Spacing="4">
-                    <TextBlock Text="STOK.IO" FontSize="20" FontWeight="Black" Foreground="White" LetterSpacing="1.5"/>
-                    <TextBlock Text="Özelleştirilmiş Stok Takip Sistemi" FontSize="11" Foreground="#6B7280" FontWeight="Medium"/>
+                <StackPanel Grid.Row="0" Margin="0,0,0,30" Spacing="4">
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="30" Height="30" BorderBrush="{StaticResource Amber}" BorderThickness="1" CornerRadius="2">
+                            <TextBlock Text="E" Foreground="{StaticResource Amber}" FontFamily="{StaticResource FontMono}" FontSize="13"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="ENVANTER" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" LetterSpacing="1"/>
+                    </StackPanel>
+                    <TextBlock Text="Zirai ilaç stok denetimi" FontSize="11" Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
                 </StackPanel>
-                
+
                 <!-- Tıklanabilir Menü Butonları -->
-                <StackPanel Grid.Row="1" Spacing="6">
+                <StackPanel Grid.Row="1" Spacing="4">
                     <!-- ÜRÜN YÖNETİMİ ANA GRUBU -->
-                    <Button Name="BtnUrunYonetimi" Click="Menu_Click" Tag="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="#2D3142" Foreground="White" CornerRadius="8" Padding="12,10" Margin="0,0,0,2">
-                        <TextBlock Text="📦 Ürün Yönetimi" FontWeight="SemiBold" FontSize="13"/>
+                    <Button Name="BtnUrunYonetimi" Click="Menu_Click" Tag="0" Classes="navActive" Margin="0,0,0,2">
+                        <TextBlock Text="Ürün Yönetimi" FontSize="13"/>
                     </Button>
-                    
-                    <Button Name="BtnLoglar" Click="Menu_Click" Tag="3" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" Foreground="#9CA3AF" CornerRadius="6" Padding="20,8" Margin="0,0,0,15">
-                        <TextBlock Text="• Sistem Logları" FontWeight="Medium" FontSize="12"/>
+
+                    <Button Name="BtnLoglar" Click="Menu_Click" Tag="3" Classes="navSub" Margin="0,0,0,15">
+                        <TextBlock Text="• Sistem Logları"/>
                     </Button>
-                    
+
                     <!-- SİSTEM AYARLARI ANA GRUBU -->
-                    <TextBlock Text="⚙️ SİSTEM AYARLARI" FontSize="11" FontWeight="Bold" Foreground="#4B5563" Margin="12,0,0,6" LetterSpacing="1"/>
-                    
-                    <!-- Veri Kontrolü -->
-                    <Button Name="BtnYedekleme" Click="Menu_Click" Tag="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" Foreground="#9CA3AF" CornerRadius="6" Padding="20,8">
-                        <TextBlock Text="• Veri Kontrolü" FontWeight="Medium" FontSize="12"/>
+                    <TextBlock Text="SİSTEM AYARLARI" FontSize="10.5" FontWeight="Medium" Foreground="{StaticResource TextFaint}"
+                               Margin="12,0,0,6" LetterSpacing="1.2"/>
+
+                    <Button Name="BtnYedekleme" Click="Menu_Click" Tag="1" Classes="navSub">
+                        <TextBlock Text="• Veri Kontrolü"/>
                     </Button>
-                    <Button Name="BtnYetkiler" Click="Menu_Click" Tag="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" Foreground="#9CA3AF" CornerRadius="6" Padding="20,8">
-                        <TextBlock Text="• Kullanıcı Değiştir / Ekle" FontWeight="Medium" FontSize="12"/>
+                    <Button Name="BtnYetkiler" Click="Menu_Click" Tag="2" Classes="navSub">
+                        <TextBlock Text="• Kullanıcı Değiştir / Ekle"/>
                     </Button>
-                    <Button Name="BtnLisans" Click="Menu_Click" Tag="4" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Background="Transparent" Foreground="#9CA3AF" CornerRadius="6" Padding="20,8">
-                        <TextBlock Text="• Hakkında" FontWeight="Medium" FontSize="12"/>
+                    <Button Name="BtnLisans" Click="Menu_Click" Tag="4" Classes="navSub">
+                        <TextBlock Text="• Hakkında"/>
                     </Button>
                 </StackPanel>
-                
+
                 <!-- Sol Alt Kullanıcı Seçim Alanı -->
-                <StackPanel Grid.Row="2" Spacing="8" Margin="0,0,0,10">
-                    <TextBlock Text="👤 Aktif Kullanıcı:" FontSize="11" Foreground="#6B7280" FontWeight="Bold"/>
-                    <ComboBox Name="UserComboBox" HorizontalAlignment="Stretch" Background="#2D3142" Foreground="White" CornerRadius="6">
-                    </ComboBox>
+                <StackPanel Grid.Row="2" Spacing="8">
+                    <Border BorderBrush="{StaticResource BorderCol}" BorderThickness="0,1,0,0" Padding="0,16,0,0">
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="AKTİF KULLANICI" FontSize="10.5" Foreground="{StaticResource TextFaint}" LetterSpacing="1"/>
+                            <ComboBox Name="UserComboBox" HorizontalAlignment="Stretch"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- ================= SAĞ İÇERİK ALANI ================= -->
-        <TabControl Name="MainTabControl" Grid.Column="1" BorderThickness="0" Margin="0" Padding="0">
+        <TabControl Name="MainTabControl" Grid.Column="1" BorderThickness="0" Margin="0" Padding="0" Background="Transparent">
             <TabControl.Styles>
                 <Style Selector="TabItem">
                     <Setter Property="IsVisible" Value="False"/>
@@ -62,64 +286,63 @@
 
             <!-- SEKME 0: ÜRÜN YÖNETİMİ -->
             <TabItem>
-                <Grid RowDefinitions="Auto,*,Auto" Margin="24">
-                    
+                <Grid RowDefinitions="Auto,*,Auto" Margin="36,32">
+
                     <!-- Form ve Arama Alanlarını İçeren Üst Panel -->
-                    <StackPanel Grid.Row="0" Spacing="12" Margin="0,0,0,20">
-                        
-                        <!-- KATMAN 1: Geniş ve Ferah Arama Motoru -->
-                        <Border Background="White" CornerRadius="12" Padding="14,12" BorderBrush="#E5E7EB" BorderThickness="1">
-                            <TextBox x:Name="SearchBox" Watermark="🔎 Listede hızlı ara" 
-                                     Background="#F9FAFB" BorderBrush="#E5E7EB" Height="40" CornerRadius="6" 
-                                     FontSize="13" TextChanged="SearchBox_TextChanged"/>
+                    <StackPanel Grid.Row="0" Spacing="14" Margin="0,0,0,22">
+
+                        <!-- KATMAN 1: Arama -->
+                        <Border Classes="card" Padding="14,4">
+                            <TextBox x:Name="SearchBox" Watermark="Listede hızlı ara"
+                                     Background="Transparent" BorderThickness="0" Height="40"
+                                     FontSize="13.5" TextChanged="SearchBox_TextChanged"/>
                         </Border>
-                        
+
                         <!-- KATMAN 2: Veri Giriş ve Operasyon Butonları -->
-                        <Border Background="White" CornerRadius="12" Padding="16" BorderBrush="#E5E7EB" BorderThickness="1">
+                        <Border Classes="card" Padding="16">
                             <Grid ColumnDefinitions="*,150,Auto">
-                                <!-- Giriş kutularının geniş paylaşımı -->
                                 <Grid Grid.Column="0" ColumnDefinitions="*,130" Margin="0,0,12,0">
                                     <AutoCompleteBox x:Name="NameBox" Grid.Column="0" Watermark="İlaç Adı Girin" FilterMode="Contains" Height="38" Margin="0,0,10,0"/>
-                                    <TextBox x:Name="QuantityBox" Grid.Column="1" Watermark="Sayı Girin" Background="#F9FAFB" BorderBrush="#E5E7EB" Height="38" CornerRadius="6"/>
+                                    <TextBox x:Name="QuantityBox" Grid.Column="1" Watermark="Sayı Girin" Height="38" FontFamily="{StaticResource FontMono}"/>
                                 </Grid>
 
                                 <!-- Hızlı Stok Değişim Butonları (-1 ve +1) -->
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="0,0,16,0">
-                                    <Button Content="-1" Width="44" Height="38" Background="#3B82F6" Foreground="White" FontWeight="Bold" CornerRadius="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="FastDecreaseButton_Click"/>
-                                    <Button Content="+1" Width="44" Height="38" Background="#3B82F6" Foreground="White" FontWeight="Bold" CornerRadius="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="FastIncreaseButton_Click"/>
+                                    <Button Content="−" Width="44" Height="38" Classes="step" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="FastDecreaseButton_Click"/>
+                                    <Button Content="+" Width="44" Height="38" Classes="step" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="FastIncreaseButton_Click"/>
                                 </StackPanel>
-                                
+
                                 <!-- Standart Yönetim Butonları -->
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6">
-                                    <Button x:Name="AddButton" Content="Ekle" Width="65" Height="38" Background="#10B981" Foreground="White" FontWeight="SemiBold" CornerRadius="6" HorizontalContentAlignment="Center" Click="AddButton_Click"/>
-                                    <Button x:Name="UpdateButton" Content="Güncelle" Width="85" Height="38" Background="#F59E0B" Foreground="White" FontWeight="SemiBold" CornerRadius="6" HorizontalContentAlignment="Center" Click="UpdateButton_Click"/>
-                                    <Button x:Name="DeleteButton" Content="Sil" Width="55" Height="38" Background="#EF4444" Foreground="White" FontWeight="SemiBold" CornerRadius="6" HorizontalContentAlignment="Center" Click="DeleteButton_Click"/>
-                                    <Button x:Name="ClearButton" Content="Temizle" Width="80" Height="38" Background="#6B7280" Foreground="White" FontWeight="SemiBold" CornerRadius="6" HorizontalContentAlignment="Center" Click="ClearButton_Click"/>
+                                    <Button x:Name="AddButton" Content="Ekle" Width="65" Height="38" Classes="primary" HorizontalContentAlignment="Center" Click="AddButton_Click"/>
+                                    <Button x:Name="UpdateButton" Content="Güncelle" Width="85" Height="38" Classes="outline" HorizontalContentAlignment="Center" Click="UpdateButton_Click"/>
+                                    <Button x:Name="DeleteButton" Content="Sil" Width="55" Height="38" Classes="danger" HorizontalContentAlignment="Center" Click="DeleteButton_Click"/>
+                                    <Button x:Name="ClearButton" Content="Temizle" Width="80" Height="38" Classes="outline" HorizontalContentAlignment="Center" Click="ClearButton_Click"/>
                                 </StackPanel>
                             </Grid>
                         </Border>
                     </StackPanel>
 
                     <!-- Stok Tablosu -->
-                    <Border Grid.Row="1" Background="White" CornerRadius="12" Padding="4" Margin="0,0,0,20" BorderBrush="#E5E7EB" BorderThickness="1">
-                        <DataGrid x:Name="ProductGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="ProductGrid_SelectionChanged" x:DataType="models:Product" Background="Transparent" RowBackground="White">
+                    <Border Grid.Row="1" Classes="card" Padding="2" Margin="0,0,0,20">
+                        <DataGrid x:Name="ProductGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="ProductGrid_SelectionChanged" x:DataType="models:Product">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+                                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="90" FontFamily="{StaticResource FontMono}"/>
                                 <DataGridTextColumn Header="İlaç Adı" Binding="{Binding Name}" Width="*"/>
-                                <DataGridTextColumn Header="Miktar" Binding="{Binding Quantity}" Width="130"/>
-                                <DataGridTextColumn Header="Son Güncelleme" Binding="{Binding LastUpdated, StringFormat={}{0:g}}" Width="180"/>
+                                <DataGridTextColumn Header="Miktar" Binding="{Binding Quantity}" Width="130" FontFamily="{StaticResource FontMono}"/>
+                                <DataGridTextColumn Header="Son Güncelleme" Binding="{Binding LastUpdated, StringFormat={}{0:g}}" Width="180" FontFamily="{StaticResource FontMono}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
 
                     <!-- Durum Mesajı + Sayfalama (Pager) -->
-                    <Grid Grid.Row="2" Margin="4,0,0,0" ColumnDefinitions="*,Auto">
-                        <TextBlock x:Name="StatusText" Grid.Column="0" FontWeight="Medium" FontSize="13" Foreground="#EF4444" VerticalAlignment="Center"/>
+                    <Grid Grid.Row="2" ColumnDefinitions="*,Auto">
+                        <TextBlock x:Name="StatusText" Grid.Column="0" FontWeight="Medium" FontSize="13" Foreground="{StaticResource Danger}" VerticalAlignment="Center"/>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
-                            <Button x:Name="PrevPageButton" Content="◀ Önceki" Padding="12,6" Background="#E5E7EB" Foreground="#374151" CornerRadius="6" FontWeight="SemiBold" Click="PrevPageButton_Click"/>
-                            <TextBlock x:Name="PageInfoText" VerticalAlignment="Center" FontSize="13" Foreground="#374151" FontWeight="Medium"/>
-                            <Button x:Name="NextPageButton" Content="Sonraki ▶" Padding="12,6" Background="#E5E7EB" Foreground="#374151" CornerRadius="6" FontWeight="SemiBold" Click="NextPageButton_Click"/>
+                            <Button x:Name="PrevPageButton" Content="◀ Önceki" Padding="14,8" Classes="pager" Click="PrevPageButton_Click"/>
+                            <TextBlock x:Name="PageInfoText" VerticalAlignment="Center" FontSize="12.5" Foreground="{StaticResource TextFaint}" FontFamily="{StaticResource FontMono}"/>
+                            <Button x:Name="NextPageButton" Content="Sonraki ▶" Padding="14,8" Classes="pager" Click="NextPageButton_Click"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -127,20 +350,20 @@
 
             <!-- SEKME 1: VERİ KONTROLÜ -->
             <TabItem>
-                <Grid Margin="40" RowDefinitions="Auto,Auto,*">
-                    <TextBlock Grid.Row="0" Text="📊 Veri Kontrolü ve Entegrasyon" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
-                    <TextBlock Grid.Row="1" Text="Mevcut stok listelerinizi dışa aktarın, şablonları indirin veya Excel transferlerinizi gerçekleştirin." FontSize="13" Foreground="#6B7280" Margin="0,4,0,30"/>
-                    
-                    <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="24" BorderBrush="#E5E7EB" BorderThickness="1" VerticalAlignment="Top">
-                        <StackPanel Spacing="16">
-                            <Button Content="🖨️ Güncel Stok Durumunu Raporla (PDF/TXT)" Padding="16,14" Background="#374151" Foreground="White" CornerRadius="6" FontWeight="SemiBold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="PrintReportButton_Click"/>
-                            
-                            <Button Content="📝 Örnek Excel Yükleme Şablonu İndir" Padding="16,14" Background="#4B5563" Foreground="White" CornerRadius="6" FontWeight="SemiBold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="DownloadTemplateButton_Click"/>
-                            
-                            <Separator BorderBrush="#E5E7EB" BorderThickness="0.5" Margin="0,5"/>
-                            
-                            <Button Content="📥 Excel Dosyasından Veri İçe Aktar" Padding="16,14" Background="#10B981" Foreground="White" CornerRadius="6" FontWeight="SemiBold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="ImportExcelButton_Click"/>
-                            <Button Content="📤 Mevcut Stoğu Excel Olarak Dışa Aktar" Padding="16,14" Background="#3B82F6" Foreground="White" CornerRadius="6" FontWeight="SemiBold" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Click="ExportExcelButton_Click"/>
+                <Grid Margin="44,40" RowDefinitions="Auto,Auto,*">
+                    <TextBlock Grid.Row="0" Text="Veri Kontrolü ve Entegrasyon" Classes="sectionTitle"/>
+                    <TextBlock Grid.Row="1" Classes="sectionSub" Margin="0,6,0,28"
+                               Text="Mevcut stok listelerinizi dışa aktarın, şablonları indirin veya Excel transferlerinizi gerçekleştirin."/>
+
+                    <Border Grid.Row="2" Classes="card" Padding="24" VerticalAlignment="Top">
+                        <StackPanel Spacing="12">
+                            <Button Content="Güncel stok durumunu raporla (PDF/TXT)" Padding="16,14" Classes="panelAction" HorizontalAlignment="Stretch" Click="PrintReportButton_Click"/>
+                            <Button Content="Örnek Excel yükleme şablonu indir" Padding="16,14" Classes="panelAction" HorizontalAlignment="Stretch" Click="DownloadTemplateButton_Click"/>
+
+                            <Separator Background="{StaticResource BorderCol}" Height="1" Margin="0,6"/>
+
+                            <Button Content="Excel dosyasından veri içe aktar" Padding="16,14" Classes="panelAction" HorizontalAlignment="Stretch" Click="ImportExcelButton_Click"/>
+                            <Button Content="Mevcut stoğu Excel olarak dışa aktar" Padding="16,14" Classes="panelAction" HorizontalAlignment="Stretch" Click="ExportExcelButton_Click"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -148,27 +371,29 @@
 
             <!-- SEKME 2: KULLANICI EKLEME VE YÖNETME EKRANI -->
             <TabItem>
-                <Grid Margin="40" RowDefinitions="Auto,Auto,*">
-                    <TextBlock Grid.Row="0" Text="👥 Kullanıcı Tanımlama" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
-                    <TextBlock Grid.Row="1" Text="Sistemde işlem yapacak kişilerin isimlerini ekleyin veya listeden kaldırın." FontSize="13" Foreground="#6B7280" Margin="0,4,0,30"/>
-                    
-                    <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="24" BorderBrush="#E5E7EB" BorderThickness="1" VerticalAlignment="Top">
+                <Grid Margin="44,40" RowDefinitions="Auto,Auto,*">
+                    <TextBlock Grid.Row="0" Text="Kullanıcı Tanımlama" Classes="sectionTitle"/>
+                    <TextBlock Grid.Row="1" Classes="sectionSub" Margin="0,6,0,28"
+                               Text="Sistemde işlem yapacak kişilerin isimlerini ekleyin veya listeden kaldırın."/>
+
+                    <Border Grid.Row="2" Classes="card" Padding="24" VerticalAlignment="Top">
                         <Grid RowDefinitions="Auto,Auto,*,Auto">
                             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,20">
                                 <TextBox Name="NewUserBox" Watermark="Eklenecek personel ismi yazın..." Height="38" Margin="0,0,12,0"/>
-                                <Button Content="Kullanıcı Ekle" Grid.Column="1" Height="38" Background="#10B981" Foreground="White" CornerRadius="6" Padding="15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="AddUserButton_Click"/>                            </Grid>
-                            
-                            <TextBlock Grid.Row="1" Text="Sistemde Kayıtlı İsimler" FontWeight="Bold" Margin="0,0,0,10"/>
-                            
-                            <ListBox Name="UsersListBox" Grid.Row="2" Background="#F9FAFB" CornerRadius="8" Height="220" Margin="0,0,0,16">
+                                <Button Content="Kullanıcı Ekle" Grid.Column="1" Height="38" Classes="primary" Padding="15,0" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="AddUserButton_Click"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" Text="Sistemde kayıtlı isimler" FontWeight="Medium" Foreground="{StaticResource TextDim}" FontSize="13" Margin="0,0,0,10"/>
+
+                            <ListBox Name="UsersListBox" Grid.Row="2" Height="220" Margin="0,0,0,16">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding}" Padding="5" FontSize="13"/>
+                                        <TextBlock Text="{Binding}" Padding="6" FontSize="13" Foreground="{StaticResource TextMain}"/>
                                     </DataTemplate>
                                 </ListBox.ItemTemplate>
                             </ListBox>
 
-                            <Button Name="DeleteUserButton" Grid.Row="3" Content="🗑️ Seçili Kullanıcıyı Sistemden Sil" Background="#EF4444" Foreground="White" FontWeight="SemiBold" CornerRadius="6" Height="38" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="DeleteUserButton_Click"/>
+                            <Button Name="DeleteUserButton" Grid.Row="3" Content="Seçili kullanıcıyı sistemden sil" Classes="danger" Height="38" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Click="DeleteUserButton_Click"/>
                         </Grid>
                     </Border>
                 </Grid>
@@ -176,21 +401,22 @@
 
             <!-- SEKME 3: TAM SAYFA LOG BÖLÜMÜ -->
             <TabItem>
-                <Grid Margin="40" RowDefinitions="Auto,Auto,*">
+                <Grid Margin="44,40" RowDefinitions="Auto,Auto,*">
                     <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
-                        <TextBlock Text="📋 Sistem İşlem Günlükleri" FontSize="22" FontWeight="Bold" Foreground="#111827" VerticalAlignment="Center"/>
-                        <Button Grid.Column="1" Content="🗑️ Log Geçmişini Temizle" FontSize="12" Padding="14,8" Background="#EF4444" Foreground="White" CornerRadius="6" FontWeight="SemiBold" Click="ClearLogsButton_Click"/>
+                        <TextBlock Text="Sistem İşlem Günlükleri" Classes="sectionTitle" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="Log geçmişini temizle" FontSize="12" Padding="14,8" Classes="danger" Click="ClearLogsButton_Click"/>
                     </Grid>
-                    <TextBlock Grid.Row="1" Text="Depoda gerçekleştirilen ekleme, silme ve güncelleme hareketlerinin kronolojik dökümü." FontSize="13" Foreground="#6B7280" Margin="0,4,0,25"/>
-                    
-                    <Border Grid.Row="2" Background="White" CornerRadius="12" Padding="4" BorderBrush="#E5E7EB" BorderThickness="1">
-                        <DataGrid x:Name="LogGrid" AutoGenerateColumns="False" IsReadOnly="True" Background="Transparent" RowBackground="White" x:DataType="models:StockLog">
+                    <TextBlock Grid.Row="1" Classes="sectionSub" Margin="0,6,0,24"
+                               Text="Depoda gerçekleştirilen ekleme, silme ve güncelleme hareketlerinin kronolojik dökümü."/>
+
+                    <Border Grid.Row="2" Classes="card" Padding="2">
+                        <DataGrid x:Name="LogGrid" AutoGenerateColumns="False" IsReadOnly="True" x:DataType="models:StockLog">
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="Zaman" Binding="{Binding Timestamp, StringFormat={}{0:dd.MM HH:mm}}" Width="125"/>
-                                <DataGridTextColumn Header="Kullanıcı" Binding="{Binding Operator}" Width="150" Foreground="#10B981" FontWeight="SemiBold"/>
-                                <DataGridTextColumn Header="İşlem Türü" Binding="{Binding ActionType}" Width="120" Foreground="#3B82F6" FontWeight="Bold"/>
+                                <DataGridTextColumn Header="Zaman" Binding="{Binding Timestamp, StringFormat={}{0:dd.MM HH:mm}}" Width="120" FontFamily="{StaticResource FontMono}"/>
+                                <DataGridTextColumn Header="Kullanıcı" Binding="{Binding Operator}" Width="150" Foreground="{StaticResource AmberStrong}" FontWeight="Medium"/>
+                                <DataGridTextColumn Header="İşlem Türü" Binding="{Binding ActionType}" Width="120" Foreground="{StaticResource TextDim}" FontFamily="{StaticResource FontMono}"/>
                                 <DataGridTextColumn Header="Etkilenen İlaç" Binding="{Binding ProductName}" Width="200"/>
-                                <DataGridTextColumn Header="İşlem Açıklaması ve Detay" Binding="{Binding Details}" Width="*"/>
+                                <DataGridTextColumn Header="İşlem açıklaması ve detay" Binding="{Binding Details}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Border>
@@ -199,38 +425,36 @@
 
             <!-- SEKME 4: HAKKINDA BÖLÜMÜ -->
             <TabItem>
-                <Grid Margin="40" RowDefinitions="Auto,Auto,*">
-                    <TextBlock Grid.Row="0" Text="📝 Hakkında" FontSize="22" FontWeight="Bold" Foreground="#111827"/>
-                    <TextBlock Grid.Row="1" Text="STOK.IO Özelleştirilmiş Stok Takip Sistemi kaynak kodu ve mimari detayları." FontSize="13" Foreground="#6B7280" Margin="0,4,0,25"/>
-                    
+                <Grid Margin="44,40" RowDefinitions="Auto,Auto,*">
+                    <TextBlock Grid.Row="0" Text="Hakkında" Classes="sectionTitle"/>
+                    <TextBlock Grid.Row="1" Classes="sectionSub" Margin="0,6,0,24"
+                               Text="Envanter Özelleştirilmiş Stok Takip Sistemi kaynak kodu ve mimari detayları."/>
+
                     <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                        <Border Background="White" CornerRadius="12" Padding="24" BorderBrush="#E5E7EB" BorderThickness="1">
+                        <Border Classes="card" Padding="24">
                             <StackPanel Spacing="18">
                                 <StackPanel Spacing="6">
-                                    <TextBlock Text="📌 Ne işe yarar?" FontSize="15" FontWeight="Bold" Foreground="#1F2937"/>
-                                    <TextBlock Text="Bu çalışma; zirai ilaç bayileri ve depoları için geliştirilmiş modern ve hafif bir stok yönetim panelidir. Kullanıcıyı yormayan minimalist bir arayüzle depo hareketlerini anlık olarak kontrol etmeyi amaçlar." 
-                                               TextWrapping="Wrap" Foreground="#4B5563" FontSize="13" LineHeight="20"/>
+                                    <TextBlock Text="Ne işe yarar?" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
+                                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextDim}" FontSize="13" LineHeight="20"
+                                               Text="Bu çalışma; zirai ilaç bayileri ve depoları için geliştirilmiş modern ve hafif bir stok yönetim panelidir. Kullanıcıyı yormayan minimalist bir arayüzle depo hareketlerini anlık olarak kontrol etmeyi amaçlar."/>
                                 </StackPanel>
 
-                                <Separator BorderBrush="#E5E7EB" BorderThickness="0.5"/>
+                                <Separator Background="{StaticResource BorderCol}" Height="1"/>
 
                                 <StackPanel Spacing="6">
-                                    <TextBlock Text="🛠️ Teknolojik Altyapı " FontSize="15" FontWeight="Bold" Foreground="#1F2937"/>
-                                    <TextBlock Text="• Framework: .NET 8.0 &amp; Avalonia UI (Cross-Platform Mac/Windows/Linux)" Foreground="#4B5563" FontSize="13"/>
-                                    <TextBlock Text="• Veritabanı Ortamı: Entity Framework Core &amp; SQLite Mimarisi" Foreground="#4B5563" FontSize="13"/>
-                                    <TextBlock Text="• Mimari Yapı: Modern Single-Window, Tab-Driven Dashboard Mimarisi" Foreground="#4B5563" FontSize="13"/>
+                                    <TextBlock Text="Teknolojik altyapı" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
+                                    <TextBlock Text="• Framework: .NET 8.0 ve Avalonia UI (Cross-Platform Mac/Windows/Linux)" Foreground="{StaticResource TextDim}" FontSize="13"/>
+                                    <TextBlock Text="• Veritabanı ortamı: Entity Framework Core ve SQLite mimarisi" Foreground="{StaticResource TextDim}" FontSize="13"/>
+                                    <TextBlock Text="• Mimari yapı: Single-window, tab-driven dashboard mimarisi" Foreground="{StaticResource TextDim}" FontSize="13"/>
                                 </StackPanel>
 
-                                <Separator BorderBrush="#E5E7EB" BorderThickness="0.5"/>
+                                <Separator Background="{StaticResource BorderCol}" Height="1"/>
 
                                 <Grid ColumnDefinitions="*,Auto">
                                     <StackPanel Grid.Column="0" Spacing="4">
-                                        <TextBlock Text="💻 Geliştirici" FontSize="12" FontWeight="Bold" Foreground="#9CA3AF"/>
-                                        <TextBlock Text="Arda Önder" FontSize="14" FontWeight="SemiBold" Foreground="#1F2937"/>
+                                        <TextBlock HorizontalAlignment="Center" FontSize="11" FontFamily="{StaticResource FontMono}"
+                                          Foreground="{StaticResource TextFaint}" Text="v1.0.1 stable  ·  Arda Önder"/>
                                     </StackPanel>
-                                    <Border Grid.Column="1" Background="#F3F4F6" CornerRadius="6" Padding="8,4" VerticalAlignment="Center">
-                                        <TextBlock Text="v1.0.0-stable" FontSize="11" FontWeight="Bold" Foreground="#4B5563"/>
-                                    </Border>
                                 </Grid>
                             </StackPanel>
                         </Border>

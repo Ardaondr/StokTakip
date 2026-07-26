@@ -608,7 +608,7 @@ namespace StokTakip
                 context.Products.Remove(existing);
                 await context.SaveChangesAsync();
 
-                await LogEkleAsync(silinenAd, "Silme", $"{silinenMiktar} adet stok barındıran ilaç kaydı tamamen silindi.");
+                await LogEkleAsync(silinenAd, "Silme", $"{silinenMiktar} adet stoğu bulunan ilaç kaydı tamamen silindi.");
             }
 
             StatusText.Text = string.Empty;
