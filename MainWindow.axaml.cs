@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using ClosedXML.Excel;
 using Microsoft.EntityFrameworkCore;
 using StokTakip.Data;
@@ -32,6 +33,13 @@ namespace StokTakip
         public MainWindow()
         {
             InitializeComponent();
+
+             var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+             timer.Tick += (s, e) =>
+       {
+    ClockText.Text = DateTime.Now.ToString("dd.MM.yyyy  HH:mm:ss");
+         };
+         timer.Start();
             _ = InitializeAsync();
         }
 

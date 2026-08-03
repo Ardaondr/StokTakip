@@ -34,6 +34,15 @@
             <Setter Property="HorizontalContentAlignment" Value="Left"/>
             <Setter Property="Padding" Value="20,8"/>
             <Setter Property="CornerRadius" Value="3"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18"/>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.18"/>
+                    <ThicknessTransition Property="BorderThickness" Duration="0:0:0.18"/>
+                    <ThicknessTransition Property="Padding" Duration="0:0:0.18"/>
+                </Transitions>
+            </Setter>
         </Style>
         <Style Selector="Button.navSub:pointerover">
             <Setter Property="Foreground" Value="{StaticResource TextDim}"/>
@@ -52,6 +61,14 @@
             <Setter Property="CornerRadius" Value="3"/>
             <Setter Property="BorderBrush" Value="{StaticResource Amber}"/>
             <Setter Property="BorderThickness" Value="2,0,0,0"/>
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition Property="Background" Duration="0:0:0.18"/>
+                    <BrushTransition Property="Foreground" Duration="0:0:0.18"/>
+                    <ThicknessTransition Property="BorderThickness" Duration="0:0:0.18"/>
+                    <ThicknessTransition Property="Padding" Duration="0:0:0.18"/>
+                </Transitions>
+            </Setter>
         </Style>
 
         <!-- Toolbar buttons: outline default -->
@@ -235,7 +252,7 @@
                         </Border>
                         <TextBlock Text="ENVANTER" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" LetterSpacing="1"/>
                     </StackPanel>
-                    <TextBlock Text="Zirai ilaç stok denetimi" FontSize="11" Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
+                    <TextBlock Text="Zirai ilaç bayii stok denetimi" FontSize="11" Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
                 </StackPanel>
 
                 <!-- Tıklanabilir Menü Butonları -->
@@ -270,6 +287,8 @@
                         <StackPanel Spacing="8">
                             <TextBlock Text="AKTİF KULLANICI" FontSize="10.5" Foreground="{StaticResource TextFaint}" LetterSpacing="1"/>
                             <ComboBox Name="UserComboBox" HorizontalAlignment="Stretch"/>
+                            <TextBlock x:Name="ClockText" FontSize="11" FontFamily="{StaticResource FontMono}"
+                                       Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
                         </StackPanel>
                     </Border>
                 </StackPanel>
@@ -450,12 +469,8 @@
 
                                 <Separator Background="{StaticResource BorderCol}" Height="1"/>
 
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel Grid.Column="0" Spacing="4">
-                                        <TextBlock HorizontalAlignment="Center" FontSize="11" FontFamily="{StaticResource FontMono}"
-                                          Foreground="{StaticResource TextFaint}" Text="v1.0.1 stable  ·  Arda Önder"/>
-                                    </StackPanel>
-                                </Grid>
+                                <TextBlock HorizontalAlignment="Center" FontSize="11" FontFamily="{StaticResource FontMono}"
+                                           Foreground="{StaticResource TextFaint}" Text="v1.0.1 stable  ·  Arda Önder"/>
                             </StackPanel>
                         </Border>
                     </ScrollViewer>
