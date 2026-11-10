@@ -98,7 +98,7 @@ namespace StokTakip
             foreach (var row in sample)
             {
                 var productName = _sheetData.GetCell(row, productCol.Index);
-                sb.Append(n).Append(". İlaç: ").Append(productName);
+                sb.Append(n).Append(". Ürün: ").Append(productName);
 
                 if (quantityCol is not null && quantityCol.Index >= 0)
                 {
@@ -121,7 +121,7 @@ namespace StokTakip
             var productCol = ProductColumnCombo.SelectedItem as ColumnOption;
             if (productCol is null)
             {
-                StatusText.Text = "Lütfen ilaç adı sütununu seç.";
+                StatusText.Text = "Lütfen ürün adı sütununu seç.";
                 StatusText.Foreground = Avalonia.Media.Brushes.DarkRed;
                 return;
             }

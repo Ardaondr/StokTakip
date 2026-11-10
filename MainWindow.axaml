@@ -252,7 +252,7 @@
                         </Border>
                         <TextBlock Text="ENVANTER" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource TextMain}" LetterSpacing="1"/>
                     </StackPanel>
-                    <TextBlock Text="Zirai ilaç bayii stok denetimi" FontSize="11" Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
+                    <TextBlock Text="Stok Denetimi" FontSize="11" Foreground="{StaticResource TextFaint}" Margin="1,6,0,0"/>
                 </StackPanel>
 
                 <!-- Tıklanabilir Menü Butonları -->
@@ -321,7 +321,7 @@
                         <Border Classes="card" Padding="16">
                             <Grid ColumnDefinitions="*,150,Auto">
                                 <Grid Grid.Column="0" ColumnDefinitions="*,130" Margin="0,0,12,0">
-                                    <AutoCompleteBox x:Name="NameBox" Grid.Column="0" Watermark="İlaç Adı Girin" FilterMode="Contains" Height="38" Margin="0,0,10,0"/>
+                                    <AutoCompleteBox x:Name="NameBox" Grid.Column="0" Watermark="Ürün Adı Girin" FilterMode="Contains" Height="38" Margin="0,0,10,0"/>
                                     <TextBox x:Name="QuantityBox" Grid.Column="1" Watermark="Sayı Girin" Height="38" FontFamily="{StaticResource FontMono}"/>
                                 </Grid>
 
@@ -347,7 +347,7 @@
                         <DataGrid x:Name="ProductGrid" AutoGenerateColumns="False" IsReadOnly="True" SelectionMode="Single" SelectionChanged="ProductGrid_SelectionChanged" x:DataType="models:Product">
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="90" FontFamily="{StaticResource FontMono}"/>
-                                <DataGridTextColumn Header="İlaç Adı" Binding="{Binding Name}" Width="*"/>
+                                <DataGridTextColumn Header="Ürün Adı" Binding="{Binding Name}" Width="*"/>
                                 <DataGridTextColumn Header="Miktar" Binding="{Binding Quantity}" Width="130" FontFamily="{StaticResource FontMono}"/>
                                 <DataGridTextColumn Header="Son Güncelleme" Binding="{Binding LastUpdated, StringFormat={}{0:g}}" Width="180" FontFamily="{StaticResource FontMono}"/>
                             </DataGrid.Columns>
@@ -434,7 +434,7 @@
                                 <DataGridTextColumn Header="Zaman" Binding="{Binding Timestamp, StringFormat={}{0:dd.MM HH:mm}}" Width="120" FontFamily="{StaticResource FontMono}"/>
                                 <DataGridTextColumn Header="Kullanıcı" Binding="{Binding Operator}" Width="150" Foreground="{StaticResource AmberStrong}" FontWeight="Medium"/>
                                 <DataGridTextColumn Header="İşlem Türü" Binding="{Binding ActionType}" Width="120" Foreground="{StaticResource TextDim}" FontFamily="{StaticResource FontMono}"/>
-                                <DataGridTextColumn Header="Etkilenen İlaç" Binding="{Binding ProductName}" Width="200"/>
+                                <DataGridTextColumn Header="Değişen Ürün" Binding="{Binding ProductName}" Width="200"/>
                                 <DataGridTextColumn Header="İşlem açıklaması ve detay" Binding="{Binding Details}" Width="*"/>
                             </DataGrid.Columns>
                         </DataGrid>
@@ -455,7 +455,7 @@
                                 <StackPanel Spacing="6">
                                     <TextBlock Text="Ne işe yarar?" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextMain}"/>
                                     <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextDim}" FontSize="13" LineHeight="20"
-                                               Text="Bu çalışma; zirai ilaç bayileri ve depoları için geliştirilmiş modern ve hafif bir stok yönetim panelidir. Kullanıcıyı yormayan minimalist bir arayüzle depo hareketlerini anlık olarak kontrol etmeyi amaçlar."/>
+                                               Text="Bu çalışma; depolar için geliştirilmiş modern ve hafif bir stok yönetim panelidir. Kullanıcıyı yormayan minimalist bir arayüzle depo hareketlerini anlık olarak kontrol etmeyi amaçlar."/>
                                 </StackPanel>
 
                                 <Separator Background="{StaticResource BorderCol}" Height="1"/>
